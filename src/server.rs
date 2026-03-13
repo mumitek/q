@@ -239,13 +239,14 @@ mod tests {
     #[tokio::test]
     async fn test_start_server_failure() {
         let dir = tempdir().expect("Failed to create temp dir");
-        let port = 50051; // In a production test, you'd ideally find a free port
-        let addr: SocketAddr = "127.0.0.1:50051".parse().unwrap();
+        let host = "0.0.0.0";
+        let port = 40487; // In a production test, you'd ideally find a free port
+        let addr: SocketAddr = format!("{}:{}", host, port).parse().unwrap();
 
         // 1. Bind a listener to the port first to "occupy" it
         let _occupier = std::net::TcpListener::bind(addr).unwrap();
         let cfg = QConfig {
-            host: "127.0.0.1".to_string(),
+            host: host.to_string(),
             port,
             data_dir: dir.path().to_str().unwrap().to_string(),
             num_partition: 1,
