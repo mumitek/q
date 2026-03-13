@@ -21,6 +21,11 @@ jobs:
         with:
           components: rustfmt, clippy
 
+      - name: Set up SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Check Formatting
         run: cargo fmt --check
 
