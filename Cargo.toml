@@ -14,3 +14,4 @@ tower-http = { version = "0.6", features = ["trace"] }
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
+tempfile = "3.27.0"

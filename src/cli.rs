@@ -6,6 +6,14 @@ pub(crate) struct QConfig {
     /// Port to listen on
     #[arg(short, long, default_value_t = 50051)]
     pub(crate) port: u16,
+
+    /// Directory where all the data will be stored.
+    #[arg(short, long)]
+    pub(crate) data_dir: String,
+
+    /// Number of partitions to provision
+    #[arg(short, long)]
+    pub(crate) num_partition: u16,
 }
 
 #[cfg(test)]
@@ -15,28 +23,69 @@ mod tests {
     #[test]
     fn test_default_port() {
         // Test that the parser handles default values correctly
-        let cfg = QConfig::try_parse_from(["test_app"]).unwrap();
+        let cfg =
+            QConfig::try_parse_from(["test_app", "--data-dir", "/tmp/", "--num-partition", "8"])
+                .unwrap();
         assert_eq!(cfg.port, 50051);
+        assert_eq!(cfg.data_dir, "/tmp/");
+        assert_eq!(cfg.num_partition, 8);
     }
 
     #[test]
-    fn test_custom_port() {
+    fn test_custom_input() {
         // Test overriding the port via long flag
-        let cfg = QConfig::try_parse_from(["test_app", "--port", "8080"]).unwrap();
+        let cfg = QConfig::try_parse_from([
+            "test_app",
+            "--port",
+            "8080",
+            "--data-dir",
+            "/tmp/",
+            "--num-partition",
+            "8",
+        ])
+        .unwrap();
         assert_eq!(cfg.port, 8080);
+        assert_eq!(cfg.data_dir, "/tmp/");
+        assert_eq!(cfg.num_partition, 8);
     }
 
     #[test]
-    fn test_short_port_flag() {
+    fn test_short_flag() {
         // Test overriding the port via short flag
-        let cfg = QConfig::try_parse_from(["test_app", "-p", "9000"]).unwrap();
+        let cfg = QConfig::try_parse_from([
+            "test_app",
+            "-p",
+            "9000",
+            "-d",
+            "/tmp/",
+            "--num-partition",
+            "8",
+        ])
+        .unwrap();
         assert_eq!(cfg.port, 9000);
+        assert_eq!(cfg.data_dir, "/tmp/");
+        assert_eq!(cfg.num_partition, 8);
     }
 
     #[test]
     fn test_invalid_port() {
         // Ensure non-numeric ports cause a failure
-        let result = QConfig::try_parse_from(["test_app", "-p", "not_a_number"]);
-        assert!(result.is_err());
+        let cfg = QConfig::try_parse_from([
+            "test_app",
+            "--data-dir",
+            "/tmp/",
+            "-p",
+            "not_a_number",
+            "--num-partition",
+            "8",
+        ]);
+        assert!(cfg.is_err());
+    }
+
+    #[test]
+    fn test_no_directory() {
+        // Ensure non-numeric ports cause a failure
+        let cfg = QConfig::try_parse_from(["test_app"]);
+        assert!(cfg.is_err());
     }
 }
