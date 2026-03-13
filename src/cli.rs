@@ -3,6 +3,10 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(author, version, about = "A distributed queue")]
 pub(crate) struct QConfig {
+    /// Host to listen on
+    #[arg(long, default_value = "127.0.0.1")]
+    pub(crate) host: String,
+
     /// Port to listen on
     #[arg(short, long, default_value_t = 50051)]
     pub(crate) port: u16,
@@ -26,6 +30,7 @@ mod tests {
         let cfg =
             QConfig::try_parse_from(["test_app", "--data-dir", "/tmp/", "--num-partition", "8"])
                 .unwrap();
+        assert_eq!(cfg.host, "127.0.0.1");
         assert_eq!(cfg.port, 50051);
         assert_eq!(cfg.data_dir, "/tmp/");
         assert_eq!(cfg.num_partition, 8);
@@ -36,6 +41,8 @@ mod tests {
         // Test overriding the port via long flag
         let cfg = QConfig::try_parse_from([
             "test_app",
+            "--host",
+            "localhost",
             "--port",
             "8080",
             "--data-dir",
@@ -44,6 +51,7 @@ mod tests {
             "8",
         ])
         .unwrap();
+        assert_eq!(cfg.host, "localhost");
         assert_eq!(cfg.port, 8080);
         assert_eq!(cfg.data_dir, "/tmp/");
         assert_eq!(cfg.num_partition, 8);
@@ -62,6 +70,7 @@ mod tests {
             "8",
         ])
         .unwrap();
+        assert_eq!(cfg.host, "127.0.0.1");
         assert_eq!(cfg.port, 9000);
         assert_eq!(cfg.data_dir, "/tmp/");
         assert_eq!(cfg.num_partition, 8);

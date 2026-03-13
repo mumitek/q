@@ -493,4 +493,3 @@ mod macos_benchmarks {
         }
     }
 }
-

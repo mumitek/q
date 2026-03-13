@@ -320,7 +320,7 @@ mod tests {
 
         // Create files and then make them read-only
         fs::write(&data_f, b"data").unwrap();
-        fs::write(&ptr_f, 0u32.to_be_bytes()).unwrap();
+        fs::write(&ptr_f, 0u64.to_be_bytes()).unwrap();
 
         let mut permissions = fs::metadata(&data_f).unwrap().permissions();
         permissions.set_readonly(true);
@@ -331,6 +331,15 @@ mod tests {
         assert!(
             result.is_err(),
             "Should fail to open a read-only file for appending"
+        );
+
+        assert!(
+            result
+                .err()
+                .unwrap()
+                .to_string()
+                .contains("Permission denied"),
+            "Expects permission denied error"
         );
 
         // Clean up: must set back to writable to delete on some OSs
