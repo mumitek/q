@@ -716,7 +716,7 @@ dependencies = [
 [[package]]
 name = "qp"
 version = "0.1.0"
-source = "git+ssh://git@github.com/mumitek/proto#4647997b3f554abb940ede38cad4038376083983"
+source = "git+https://github.com/mumitek/proto.git#4647997b3f554abb940ede38cad4038376083983"
 dependencies = [
  "prost",
  "tonic",
