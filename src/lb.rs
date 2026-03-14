@@ -403,12 +403,19 @@ mod benchmarks {
         }
 
         let duration = start.elapsed();
+        let per_cpu_threshold = 3600;
+        let threshold = per_cpu_threshold / cpus as u128;
         println!("\n--- Benchmark Results ---");
+        println!("CPU {}", cpus);
         println!("Total Messages: {}", num_threads * messages_per_thread);
         println!("Total Time: {:?}", duration);
         println!(
             "Avg Latency per Add: {:?}",
             duration / (num_threads * messages_per_thread) as u32
+        );
+        println!(
+            "Per CPU threshold {}, CPU count {}, threshold {}",
+            per_cpu_threshold, cpus, threshold,
         );
         println!("--------------------------\n");
 
@@ -418,9 +425,11 @@ mod benchmarks {
             (num_threads * messages_per_thread) as u32
         );
         assert!(
-            duration.as_millis() < 500,
-            "Performance regression: took {:?} which is over 2s",
-            duration
+            duration.as_millis() < threshold,
+            "Performance regression: took {:?} on {} cpus, which is over threshold of {}",
+            duration,
+            cpus,
+            threshold,
         );
     }
 }
