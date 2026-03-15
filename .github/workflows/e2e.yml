@@ -1,4 +1,4 @@
-name: Container Check
+name: E2E Test
 
 on:
   push:
