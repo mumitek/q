@@ -5,6 +5,7 @@ edition = "2024"
 
 [features]
 bench-stress = []
+e2e = []
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }

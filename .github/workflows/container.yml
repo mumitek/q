@@ -21,3 +21,24 @@ jobs:
       - name: Verify image exists
         run: |
           podman images | grep q
+
+      - name: Run Container
+        run: |
+          podman run -d -p 9095:9095 --name q-app q:latest
+          sleep 1
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run E2E Tests
+        run: cargo test --features e2e --test e2e_test
+        env:
+          SERVER_URL: http://0.0.0.0:9095
+
+      - name: Container Logs on Failure
+        if: failure()
+        run: podman logs q-app
+
+      - name: Kill runnig container
+        if: always()
+        run: podman kill q-app
