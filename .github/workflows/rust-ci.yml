@@ -51,19 +51,8 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Set up SSH Agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Install cargo-tarpaulin
         run: cargo install cargo-tarpaulin
 
       - name: Generate Coverage Report
-        run: cargo tarpaulin --out xml
-
-      - name: Upload to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          fail_ci_if_error: true
-          # token: ${{ secrets.CODECOV_TOKEN }} # Required if your repo is private
+        run: cargo tarpaulin --ignore-tests --out Html --fail-under 90
