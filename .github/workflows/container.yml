@@ -1,0 +1,23 @@
+name: Container Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          podman build -t q:latest .
+
+      - name: Verify image exists
+        run: |
+          podman images | grep q
